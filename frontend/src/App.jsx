@@ -15,6 +15,7 @@ function App() {
   const [dialogMessage, setDialogMessage] = useState("");
   const [testDisplayIndices, setTestDisplayIndices] = useState([0]); // The indices of the words currently being tested
   const [testWrongIndices, setTestWrongIndices] = useState([]); // The indices of the words marked as wrong during testing
+  const [deletConfirm, setDeletConfirm] = useState(false);
 
   useEffect(() => {
     const fetchUnits = async () => {
@@ -63,12 +64,16 @@ function App() {
   const handleNextWord = () => {
     if (currentWordIndex < wordList.length - 1) {
       setCurrentWordIndex(currentWordIndex + 1);
+    } else {
+      showDialog("You are already at the last word!");
     }
   };
 
   const handlePrevWord = () => {
     if (currentWordIndex > 0) {
       setCurrentWordIndex(currentWordIndex - 1);
+    } else {
+      showDialog("You are already at the first word!");
     }
   };
 
@@ -121,26 +126,28 @@ function App() {
         />
       )}
       <div className="flex flex-col items-center space-y-4">
-        <div className="fixed left-10 top-10">
-          <div>
+        <div className="fixed left-10 top-10 bg-white shadow-md p-4 rounded-lg">
+          <div className="mb-2">
             <label className="text-xl mr-2">Unit:</label>
             <select
               value={unit}
               onChange={handleUnitChange}
               className="text-xl p-2 rounded-md border-2 border-gray-300"
             >
-            {units.sort((a, b) => {
-                const unitA = parseInt(a.split("_")[1]);
-                const unitB = parseInt(b.split("_")[1]);
-                return unitA - unitB;
-            }).map((unit) => (
-                <option value={unit} key={unit}>
+              {units
+                .sort((a, b) => {
+                  const unitA = parseInt(a.split("_")[1]);
+                  const unitB = parseInt(b.split("_")[1]);
+                  return unitA - unitB;
+                })
+                .map((unit) => (
+                  <option value={unit} key={unit}>
                     {unit}
-                </option>
-            ))}
+                  </option>
+                ))}
             </select>
           </div>
-          <div>
+          <div className="mb-2">
             <label className="text-xl mr-2">Mode:</label>
             <button
               onClick={handleModeChange}
@@ -208,12 +215,31 @@ function App() {
                   </button>
                 </>
               )}
-              <button
-                onClick={handleDeleteWord}
-                className="text-xl p-2 rounded-md border-2 border-gray-300"
-              >
-                Delete
-              </button>
+              {!deletConfirm && (
+                <button
+                  onClick={() => setDeletConfirm(true)}
+                  className="text-xl p-2 rounded-md border-2  border-gray-300"
+                >
+                  Delete
+                </button>
+              )}
+
+              {deletConfirm && (
+                <>
+                  <button
+                    onClick={handleDeleteWord}
+                    className="text-xl p-2 rounded-md border-2 bg-red-500 text-white border-gray-300"
+                  >
+                    Delete
+                  </button>
+                  <button
+                    onClick={() => setDeletConfirm(false)}
+                    className="text-xl p-2 rounded-md border-2 bg-green-500 text-white border-gray-300"
+                  >
+                    Nevermind
+                  </button>
+                </>
+              )}
             </div>
           </>
         )}
