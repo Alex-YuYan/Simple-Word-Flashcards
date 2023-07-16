@@ -121,7 +121,7 @@ function App() {
         />
       )}
       <div className="flex flex-col items-center space-y-4">
-        <div className="flex space-x-4">
+        <div className="fixed left-10 top-10">
           <div>
             <label className="text-xl mr-2">Unit:</label>
             <select
@@ -129,11 +129,15 @@ function App() {
               onChange={handleUnitChange}
               className="text-xl p-2 rounded-md border-2 border-gray-300"
             >
-              {units.map((unit) => (
+            {units.sort((a, b) => {
+                const unitA = parseInt(a.split("_")[1]);
+                const unitB = parseInt(b.split("_")[1]);
+                return unitA - unitB;
+            }).map((unit) => (
                 <option value={unit} key={unit}>
-                  {unit}
+                    {unit}
                 </option>
-              ))}
+            ))}
             </select>
           </div>
           <div>
