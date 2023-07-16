@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import FlashCard from './FlashCard';
+import DialogBox from './DialogBox';
 
 function App() {
     const [unit, setUnit] = useState('unit_1'); 
@@ -10,11 +11,16 @@ function App() {
     const [wordList, setWordList] = useState([]);
     const [currentWordIndex, setCurrentWordIndex] = useState(0);
     const [units, setUnits] = useState([]);
+    const [dialogVisible, setDialogVisible] = useState(false);
+    const [dialogMessage, setDialogMessage] = useState('');
+    
 
     useEffect(() => {
         const fetchUnits = async () => {
             const res = await axios.get('http://localhost:5000/dictionary');
             setUnits(res.data);
+            setDialogVisible(true);
+            setDialogMessage(`Loaded ${res.data.length} units`);
         };
         fetchUnits();
     }, []);
@@ -64,10 +70,16 @@ function App() {
         }
     }
 
+    const showDialog = (message) => {
+        setDialogMessage(message);
+        setDialogVisible(true);
+    };
+
     // TODO: handle tick and cross actions for test mode
 
     return (
         <div className="h-screen flex items-center justify-center bg-gray-100">
+            {dialogVisible && <DialogBox message={dialogMessage} setDialogVisible={setDialogVisible} />}
             <div className="flex flex-col items-center space-y-4">
                 <div className="flex space-x-4">
                     <div>

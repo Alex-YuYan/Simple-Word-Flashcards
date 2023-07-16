@@ -69,6 +69,41 @@ app.get('/dictionary', (req, res) => {
     });
 });
 
+app.delete('/dictionary/:unit/:index', (req, res) => {
+    const unit = req.params.unit;
+    const index = parseInt(req.params.index);
+
+    fs.readFile(`./dictionary/${unit}.json`, 'utf8', (err, data) => {
+        if (err) {
+            console.log('Error during reading JSON file:', err);
+            res.status(500).json({ error: 'Error occurred while reading JSON file.' });
+            return;
+        }
+
+        let words = JSON.parse(data);
+
+        // Check if index is valid
+        if (index < 0 || index >= words.length) {
+            res.status(400).json({ error: 'Invalid word index.' });
+            return;
+        }
+
+        // Remove word from array
+        words.splice(index, 1);
+
+        // Write changes back to file
+        fs.writeFile(`./dictionary/${unit}.json`, JSON.stringify(words, null, 2), (err) => {
+            if (err) {
+                console.log('Error during writing JSON file:', err);
+                res.status(500).json({ error: 'Error occurred while writing JSON file.' });
+                return;
+            }
+
+            res.json({ message: 'Word deleted successfully.' });
+        });
+    });
+});
+
 app.listen(5000, () => {
     console.log('Server is running on port 5000');
 });
