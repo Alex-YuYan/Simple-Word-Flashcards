@@ -18,6 +18,36 @@ function App() {
   const [deletConfirm, setDeletConfirm] = useState(false);
 
   useEffect(() => {
+    const handleKeyDown = (event) => {
+      switch (event.key) {
+        case "ArrowRight":
+          if (mode === "learn") {
+            handleNextWord();
+          }
+          break;
+        case "ArrowLeft":
+          if (mode === "learn") {
+            handlePrevWord();
+          }
+          break;
+        case "ArrowDown":
+        case "ArrowUp":
+          if (mode === "learn") {
+            handleToggleDefinition();
+          }
+          break;
+        default:
+          break;
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    // Cleanup function to remove the event listener when the component unmounts
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [currentWordIndex, mode, showDefinition]);
+
+  useEffect(() => {
     const fetchUnits = async () => {
       const res = await axios.get("http://localhost:5000/dictionary");
       setUnits(res.data);
