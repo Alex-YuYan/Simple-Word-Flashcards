@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import FlashCard from "./FlashCard";
 import DialogBox from "./DialogBox";
+import FillButton from "./FillButton";
 
 function App() {
   const [unit, setUnit] = useState(localStorage.getItem("simple_flashcard_unit") || "unit_1");
@@ -15,7 +16,6 @@ function App() {
   const [dialogMessage, setDialogMessage] = useState("");
   const [testDisplayIndices, setTestDisplayIndices] = useState([0]); // The indices of the words currently being tested
   const [testWrongIndices, setTestWrongIndices] = useState([]); // The indices of the words marked as wrong during testing
-  const [deletConfirm, setDeletConfirm] = useState(false);
 
   useEffect(() => {
     const saveToLocal = () => {
@@ -180,6 +180,7 @@ function App() {
         }
       }
     }
+    setShowDefinition(false);
   };
 
   const shuffleWordList = () => {
@@ -292,13 +293,13 @@ function App() {
                     onClick={handlePrevWord}
                     className="text-xl p-2 rounded-md border-2 border-gray-300 w-1/2 opacity-40 hover:opacity-100"
                   >
-                    Prev
+                    ← Prev 
                   </button>
                   <button
                     onClick={handleNextWord}
                     className="text-xl p-2 rounded-md border-2 border-gray-300 w-1/2 opacity-40 hover:opacity-100"
                   >
-                    Next
+                    Next →
                   </button>
                 </>
               )}
@@ -319,32 +320,8 @@ function App() {
                 </>
               )}
               </div>
-            <div className="flex space-x-4 w-full opacity-40 hover:opacity-100">
-              {!deletConfirm && (
-                <button
-                  onClick={() => setDeletConfirm(true)}
-                  className="w-full text-xl p-2 rounded-md border-2  border-gray-300"
-                >
-                  Familiar Enough
-                </button>
-              )}
-
-              {deletConfirm && (
-                <>
-                  <button
-                    onClick={() => {handleDeleteWord(); setDeletConfirm(false)}}
-                    className="text-xl p-2 rounded-md border-2 bg-red-500 text-white border-gray-300 w-1/2"
-                  >
-                    Delete
-                  </button>
-                  <button
-                    onClick={() => setDeletConfirm(false)}
-                    className="text-xl p-2 rounded-md border-2 bg-green-500 text-white border-gray-300 w-1/2"
-                  >
-                    Nevermind
-                  </button>
-                </>
-              )}
+            <div className="flex space-x-4 w-full">
+            <FillButton onFilled={() => handleDeleteWord()} text={"Familiar Enough (Hold Spacebar)"}/>
             </div>
           </>
         )}
