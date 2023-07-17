@@ -5,7 +5,7 @@ import FlashCard from "./FlashCard";
 import DialogBox from "./DialogBox";
 
 function App() {
-  const [unit, setUnit] = useState("unit_1");
+  const [unit, setUnit] = useState(localStorage.getItem("simple_flashcard_unit") || "unit_1");
   const [mode, setMode] = useState("learn");
   const [showDefinition, setShowDefinition] = useState(true);
   const [wordList, setWordList] = useState([]);
@@ -16,6 +16,13 @@ function App() {
   const [testDisplayIndices, setTestDisplayIndices] = useState([0]); // The indices of the words currently being tested
   const [testWrongIndices, setTestWrongIndices] = useState([]); // The indices of the words marked as wrong during testing
   const [deletConfirm, setDeletConfirm] = useState(false);
+
+  useEffect(() => {
+    const saveToLocal = () => {
+      localStorage.setItem("simple_flashcard_unit", unit);
+    };
+    saveToLocal();
+  }, [unit]);
 
   useEffect(() => {
     const handleKeyDown = (event) => {
