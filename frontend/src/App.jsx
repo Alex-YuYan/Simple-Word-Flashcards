@@ -32,9 +32,23 @@ function App() {
           break;
         case "ArrowDown":
         case "ArrowUp":
-          if (mode === "learn") {
-            handleToggleDefinition();
+          handleToggleDefinition();
+          break;
+        case "Q":
+        case "q":
+          if (mode === "test") {
+            handleTestSelection(true);
           }
+          break;
+        case "W":
+        case "w":
+          if (mode === "test") {
+            handleTestSelection(false);
+          }
+          break;
+        case "T":
+        case "t":
+          handleModeChange();
           break;
         default:
           break;
@@ -45,7 +59,14 @@ function App() {
 
     // Cleanup function to remove the event listener when the component unmounts
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [currentWordIndex, mode, showDefinition]);
+  }, [
+    currentWordIndex,
+    mode,
+    showDefinition,
+    wordList,
+    testDisplayIndices,
+    testWrongIndices,
+  ]);
 
   useEffect(() => {
     const fetchUnits = async () => {
@@ -67,7 +88,6 @@ function App() {
       setTestWrongIndices([]);
       setShowDefinition(true);
     }
-    setCurrentWordIndex(0); // Reset the currentWordIndex to 0
   }, [wordList, mode]);
 
   useEffect(() => {
@@ -85,6 +105,7 @@ function App() {
 
   const handleModeChange = () => {
     setMode(mode === "learn" ? "test" : "learn");
+    setCurrentWordIndex(0);
   };
 
   const handleToggleDefinition = () => {
@@ -156,6 +177,26 @@ function App() {
         />
       )}
       <div className="flex flex-col items-center space-y-4">
+        <div className="text-center mb-10">
+          {mode === "learn" && (
+            <h1 className="font-bold font-serif text-6xl">
+              <span className="text-emerald-700 text-[80px]">
+                {currentWordIndex + 1}
+              </span>{" "}
+              / <span className="text-zinc-700/80">{wordList.length}</span>{" "}
+            </h1>
+          )}
+          {mode === "test" && (
+            <>
+            <div className="font-semibold text-3xl text-zinc-800/80">
+                <span className="text-amber-600">{testDisplayIndices.length}</span> Remaining
+            </div>
+            <div className="font-semibold text-3xl text-zinc-800/80 mt-2">
+            <span className="text-red-600">{testWrongIndices.length}</span> Wrong
+            </div>
+            </>
+          )}
+        </div>
         <div className="fixed left-10 top-10 bg-white shadow-md p-4 rounded-lg">
           <div className="mb-2">
             <label className="text-xl mr-2">Unit:</label>
@@ -163,6 +204,7 @@ function App() {
               value={unit}
               onChange={handleUnitChange}
               className="text-xl p-2 rounded-md border-2 border-gray-300"
+              disabled={mode === "test"}
             >
               {units
                 .sort((a, b) => {
@@ -245,6 +287,8 @@ function App() {
                   </button>
                 </>
               )}
+              </div>
+            <div className="flex space-x-4">
               {!deletConfirm && (
                 <button
                   onClick={() => setDeletConfirm(true)}
@@ -257,7 +301,7 @@ function App() {
               {deletConfirm && (
                 <>
                   <button
-                    onClick={handleDeleteWord}
+                    onClick={() => {handleDeleteWord(); setDeletConfirm(false)}}
                     className="text-xl p-2 rounded-md border-2 bg-red-500 text-white border-gray-300"
                   >
                     Delete
