@@ -39,6 +39,8 @@ function App() {
           break;
         case "ArrowDown":
         case "ArrowUp":
+        case "E":
+        case "e":
           handleToggleDefinition();
           break;
         case "Q":
@@ -169,8 +171,13 @@ function App() {
     } else {
       if (testDisplayIndices.length === 1 && testWrongIndices.length === 0) {
       } else {
-        setTestWrongIndices([...testWrongIndices, testDisplayIndices[0]]);
+        const newTestWrongIndices = [...testWrongIndices, testDisplayIndices[0]];
+        setTestWrongIndices(newTestWrongIndices);
         setTestDisplayIndices(testDisplayIndices.slice(1));
+        if (testDisplayIndices.length === 1) {
+          setTestDisplayIndices(newTestWrongIndices);
+          setTestWrongIndices([]);
+        }
       }
     }
   };
