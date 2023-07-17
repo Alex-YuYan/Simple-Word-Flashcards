@@ -91,7 +91,7 @@ function App() {
       setTestWrongIndices([]);
       setShowDefinition(false);
     } else {
-      setTestDisplayIndices([0]); // Reset testDisplayIndices to only show the first word
+      setTestDisplayIndices([0]);
       setTestWrongIndices([]);
       setShowDefinition(true);
     }
@@ -175,6 +175,15 @@ function App() {
     }
   };
 
+  const shuffleWordList = () => {
+    const newWordList = [...wordList];
+    for (let i = newWordList.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [newWordList[i], newWordList[j]] = [newWordList[j], newWordList[i]];
+    }
+    setWordList(newWordList);
+  };
+
   return (
     <div className="h-screen flex items-center justify-center bg-gray-100">
       {dialogVisible && (
@@ -235,12 +244,20 @@ function App() {
               {mode}
             </button>
           </div>
-          <div>
+          <div className="mb-2">
             <button
               onClick={handleToggleDefinition}
               className="text-xl p-2 rounded-md border-2 border-gray-300"
             >
               {showDefinition ? "Hide definition" : "Show definition"}
+            </button>
+          </div>
+          <div>
+            <button
+              onClick={shuffleWordList}
+              className="text-xl p-2 rounded-md border-2 border-gray-300"
+            >
+              Shuffle
             </button>
           </div>
         </div>
