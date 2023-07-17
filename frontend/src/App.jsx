@@ -176,8 +176,8 @@ function App() {
           setDialogVisible={setDialogVisible}
         />
       )}
-      <div className="flex flex-col items-center space-y-4">
-        <div className="text-center mb-10">
+      <div className="flex flex-col items-center space-y-6">
+        <div className="text-center mb-8">
           {mode === "learn" && (
             <h1 className="font-bold font-serif text-6xl">
               <span className="text-emerald-700 text-[80px]">
@@ -197,7 +197,7 @@ function App() {
             </>
           )}
         </div>
-        <div className="fixed left-10 top-10 bg-white shadow-md p-4 rounded-lg">
+        <div className="fixed left-10 top-10 bg-white shadow-md p-4 rounded-lg hidden lg:block">
           <div className="mb-2">
             <label className="text-xl mr-2">Unit:</label>
             <select
@@ -254,18 +254,18 @@ function App() {
               />
             )}
 
-            <div className="flex space-x-4">
+            <div className="flex space-x-4 w-full">
               {mode === "learn" && (
                 <>
                   <button
                     onClick={handlePrevWord}
-                    className="text-xl p-2 rounded-md border-2 border-gray-300"
+                    className="text-xl p-2 rounded-md border-2 border-gray-300 w-1/2 opacity-40 hover:opacity-100"
                   >
                     Prev
                   </button>
                   <button
                     onClick={handleNextWord}
-                    className="text-xl p-2 rounded-md border-2 border-gray-300"
+                    className="text-xl p-2 rounded-md border-2 border-gray-300 w-1/2 opacity-40 hover:opacity-100"
                   >
                     Next
                   </button>
@@ -275,26 +275,26 @@ function App() {
                 <>
                   <button
                     onClick={() => handleTestSelection(true)}
-                    className="text-xl p-2 rounded-md border-2 border-gray-300"
+                    className="text-xl p-2 rounded-md border-2 border-gray-300 w-1/2"
                   >
                     ✓
                   </button>
                   <button
                     onClick={() => handleTestSelection(false)}
-                    className="text-xl p-2 rounded-md border-2 border-gray-300"
+                    className="text-xl p-2 rounded-md border-2 border-gray-300 w-1/2"
                   >
                     ✗
                   </button>
                 </>
               )}
               </div>
-            <div className="flex space-x-4">
+            <div className="flex space-x-4 w-full opacity-40 hover:opacity-100">
               {!deletConfirm && (
                 <button
                   onClick={() => setDeletConfirm(true)}
-                  className="text-xl p-2 rounded-md border-2  border-gray-300"
+                  className="w-full text-xl p-2 rounded-md border-2  border-gray-300"
                 >
-                  Delete
+                  Familiar Enough
                 </button>
               )}
 
@@ -302,13 +302,13 @@ function App() {
                 <>
                   <button
                     onClick={() => {handleDeleteWord(); setDeletConfirm(false)}}
-                    className="text-xl p-2 rounded-md border-2 bg-red-500 text-white border-gray-300"
+                    className="text-xl p-2 rounded-md border-2 bg-red-500 text-white border-gray-300 w-1/2"
                   >
                     Delete
                   </button>
                   <button
                     onClick={() => setDeletConfirm(false)}
-                    className="text-xl p-2 rounded-md border-2 bg-green-500 text-white border-gray-300"
+                    className="text-xl p-2 rounded-md border-2 bg-green-500 text-white border-gray-300 w-1/2"
                   >
                     Nevermind
                   </button>
