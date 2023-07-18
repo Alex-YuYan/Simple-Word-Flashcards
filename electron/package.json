@@ -1,0 +1,16 @@
+{
+  "name": "simple-word-flashcard",
+  "productName": "Simple Word Flashcard",
+  "version": "1.0.0",
+  "description": "A minimalistic flashcard app for learning new words",
+  "main": "index.js",
+  "scripts": {
+    "start": "electron main.js"
+  },  
+  "keywords": [],
+  "author": "Alex Yan",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^25.3.0"
+  }
+}
