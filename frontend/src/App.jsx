@@ -178,10 +178,12 @@ function App() {
         } else {
           setTestDisplayIndices(testWrongIndices);
           setTestWrongIndices([]);
+          showDialog("Now testing on the words you got wrong!");
         }
       }
     } else {
       if (testDisplayIndices.length === 1 && testWrongIndices.length === 0) {
+        showDialog("Now testing on final word you got wrong!");
       } else {
         const newTestWrongIndices = [
           ...testWrongIndices,
@@ -192,6 +194,7 @@ function App() {
         if (testDisplayIndices.length === 1) {
           setTestDisplayIndices(newTestWrongIndices);
           setTestWrongIndices([]);
+          showDialog("Now testing on the words you got wrong!");
         }
       }
     }
@@ -227,21 +230,45 @@ function App() {
           )}
           {mode === "test" && (
             <>
-              <div className="font-semibold text-3xl text-zinc-800/80">
-                <span className="text-amber-600">
-                  {testDisplayIndices.length}
-                </span>{" "}
-                Remaining
+              <div className="flex justify-center">
+                <div className="w-1/2 font-semibold text-3xl text-zinc-800/80 text-start">
+                  
+                  Remain{" "}<span className="text-violet-600">
+                    {testDisplayIndices.length}
+                  </span>
+                </div>
+                <div className="w-1/2 font-semibold text-3xl text-zinc-800/80 -mb-2 text-end">
+                  <span className="text-red-600">
+                    {testWrongIndices.length}
+                  </span>{" "}
+                  Wrong
+                </div>
               </div>
-              <div className="font-semibold text-3xl text-zinc-800/80 mt-2 -mb-2">
-                <span className="text-red-600">{testWrongIndices.length}</span>{" "}
-                Wrong
+              <div className="relative w-[400px] h-4 bg-violet-600/60 rounded-lg mt-6 py-3 -mb-3">
+                <div
+                  className="absolute top-0 right-0 h-full bg-red-600 rounded-lg"
+                  style={{
+                    width: `${
+                      (testWrongIndices.length / wordList.length) * 100
+                    }%`,
+                  }}
+                ></div>
+                <div
+                  className="absolute top-0 left-0 h-full bg-emerald-400 rounded-lg"
+                  style={{
+                    width: `${
+                      (1 -
+                        (testDisplayIndices.length + testWrongIndices.length) /
+                          wordList.length) *
+                      100
+                    }%`,
+                  }}
+                ></div>
               </div>
             </>
           )}
         </div>
         <div className="fixed left-10 top-10 bg-white shadow-md p-4 rounded-lg hidden lg:block min-w-[14vw] text-center">
-
           <div className="mb-2">
             <select
               value={unit}
@@ -257,7 +284,8 @@ function App() {
                 })
                 .map((unit) => (
                   <option value={unit} key={unit}>
-                    {unit.charAt(0).toUpperCase() + unit.slice(1).replace("_", " ")}
+                    {unit.charAt(0).toUpperCase() +
+                      unit.slice(1).replace("_", " ")}
                   </option>
                 ))}
             </select>
@@ -345,14 +373,14 @@ function App() {
               )}
             </div>
 
-              <div className="flex space-x-4 w-full min-h-[40px]">
+            <div className="flex space-x-4 w-full min-h-[40px]">
               {mode === "learn" && (
                 <FillButton
                   onFilled={() => handleDeleteWord()}
                   text={"Familiar Enough (Hold Spacebar)"}
                 />
-                )}
-              </div>
+              )}
+            </div>
           </>
         )}
       </div>
