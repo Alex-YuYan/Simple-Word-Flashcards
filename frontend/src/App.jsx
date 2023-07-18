@@ -58,7 +58,12 @@ function App() {
         case "W":
         case "w":
           if (mode === "test") {
-            handleTestSelection(false);
+            if (showDefinition === false) {
+              setShowDefinition(true);
+              setTimeout(() => handleTestSelection(false), 3000);
+            } else {
+              handleTestSelection(false)
+            }
           }
           break;
         case "T":
@@ -160,6 +165,9 @@ function App() {
       const newWordList = [...wordList];
       newWordList.splice(currentWordIndex, 1);
       setWordList(newWordList);
+      showDialog("Word deleted from learning list successfully!");
+    } else {
+      showDialog("Error deleting word from learning list!");
     }
   };
 
@@ -364,7 +372,14 @@ function App() {
                     ✓
                   </button>
                   <button
-                    onClick={() => handleTestSelection(false)}
+                    onClick={() => {
+                      if (showDefinition === false) {
+                        setShowDefinition(true);
+                        setTimeout(() => handleTestSelection(false), 3000);
+                      } else {
+                        handleTestSelection(false)
+                      }
+                    }}
                     className="text-xl p-2 rounded-md border-2 border-gray-300 w-1/2"
                   >
                     ✗
