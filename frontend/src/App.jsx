@@ -119,6 +119,7 @@ function App() {
   };
 
   const handleModeChange = () => {
+    showDialog(`Switched to ${mode === "learn" ? "test" : "learn"} mode`);
     setMode(mode === "learn" ? "test" : "learn");
     setCurrentWordIndex(0);
   };
@@ -343,14 +344,15 @@ function App() {
                 </>
               )}
             </div>
-            {mode === "learn" && (
-              <div className="flex space-x-4 w-full">
+
+              <div className="flex space-x-4 w-full min-h-[40px]">
+              {mode === "learn" && (
                 <FillButton
                   onFilled={() => handleDeleteWord()}
                   text={"Familiar Enough (Hold Spacebar)"}
                 />
+                )}
               </div>
-            )}
           </>
         )}
       </div>
