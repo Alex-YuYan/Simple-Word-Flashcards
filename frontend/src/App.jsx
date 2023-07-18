@@ -18,6 +18,7 @@ function App() {
   const [dialogMessage, setDialogMessage] = useState("");
   const [testDisplayIndices, setTestDisplayIndices] = useState([0]); // The indices of the words currently being tested
   const [testWrongIndices, setTestWrongIndices] = useState([]); // The indices of the words marked as wrong during testing
+  const [blocked, setBlocked] = useState(false);
 
   useEffect(() => {
     const saveToLocal = () => {
@@ -28,6 +29,9 @@ function App() {
 
   useEffect(() => {
     const handleKeyDown = (event) => {
+      if (blocked) {
+        return;
+      }
       switch (event.key) {
         case "ArrowRight":
           if (mode === "learn") {
@@ -60,7 +64,8 @@ function App() {
           if (mode === "test") {
             if (showDefinition === false) {
               setShowDefinition(true);
-              setTimeout(() => handleTestSelection(false), 3000);
+              setBlocked(true);
+              setTimeout(() => {handleTestSelection(false); setBlocked(false)}, 3000);
             } else {
               handleTestSelection(false)
             }
@@ -227,7 +232,7 @@ function App() {
         />
       )}
       <div className="flex flex-col items-center space-y-4">
-        <div className="text-center mb-8">
+        <div className={`text-center mb-8 ${blocked ? "invisible" : ""}`}>
           {mode === "learn" && (
             <h1 className="font-bold font-serif text-6xl">
               <span className="text-emerald-700 text-[80px]">
@@ -276,7 +281,7 @@ function App() {
             </>
           )}
         </div>
-        <div className="fixed left-10 top-10 bg-white shadow-md p-4 rounded-lg hidden lg:block min-w-[14vw] text-center">
+        <div className={`fixed left-10 top-10 bg-white shadow-md p-4 rounded-lg hidden min-w-[14vw] text-center  ${blocked ? '' : 'lg:block'}`}>
           <div className="mb-2">
             <select
               value={unit}
@@ -340,7 +345,7 @@ function App() {
               />
             )}
 
-            <div className="flex space-x-4 w-full">
+            <div className={`flex space-x-4 w-full ${blocked ? "invisible" : ""}`}>
               {mode === "learn" && (
                 <>
                   <button
@@ -375,7 +380,8 @@ function App() {
                     onClick={() => {
                       if (showDefinition === false) {
                         setShowDefinition(true);
-                        setTimeout(() => handleTestSelection(false), 3000);
+                        setBlocked(true);
+                        setTimeout(() => {handleTestSelection(false); setBlocked(false)}, 3000);
                       } else {
                         handleTestSelection(false)
                       }
