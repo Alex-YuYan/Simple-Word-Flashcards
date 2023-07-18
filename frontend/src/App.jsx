@@ -6,7 +6,9 @@ import DialogBox from "./DialogBox";
 import FillButton from "./FillButton";
 
 function App() {
-  const [unit, setUnit] = useState(localStorage.getItem("simple_flashcard_unit") || "unit_1");
+  const [unit, setUnit] = useState(
+    localStorage.getItem("simple_flashcard_unit") || "unit_1"
+  );
   const [mode, setMode] = useState("learn");
   const [showDefinition, setShowDefinition] = useState(true);
   const [wordList, setWordList] = useState([]);
@@ -39,14 +41,18 @@ function App() {
           break;
         case "ArrowDown":
         case "ArrowUp":
-        case "E":
-        case "e":
-          handleToggleDefinition();
+          if (mode === "learn") {
+            handleToggleDefinition();
+          }
           break;
         case "Q":
         case "q":
           if (mode === "test") {
-            handleTestSelection(true);
+            if (showDefinition === false) {
+              setShowDefinition(true);
+            } else {
+              handleTestSelection(true);
+            }
           }
           break;
         case "W":
@@ -138,6 +144,11 @@ function App() {
   };
 
   const handleDeleteWord = async () => {
+    if (wordList.length === 1) {
+      showDialog("You cannot delete the last word!");
+      return;
+    }
+
     // Delete word from backend
     const res = await axios.delete(
       `http://localhost:5000/dictionary/${unit}/${currentWordIndex}`
@@ -171,7 +182,10 @@ function App() {
     } else {
       if (testDisplayIndices.length === 1 && testWrongIndices.length === 0) {
       } else {
-        const newTestWrongIndices = [...testWrongIndices, testDisplayIndices[0]];
+        const newTestWrongIndices = [
+          ...testWrongIndices,
+          testDisplayIndices[0],
+        ];
         setTestWrongIndices(newTestWrongIndices);
         setTestDisplayIndices(testDisplayIndices.slice(1));
         if (testDisplayIndices.length === 1) {
@@ -200,7 +214,7 @@ function App() {
           setDialogVisible={setDialogVisible}
         />
       )}
-      <div className="flex flex-col items-center space-y-6">
+      <div className="flex flex-col items-center space-y-4">
         <div className="text-center mb-8">
           {mode === "learn" && (
             <h1 className="font-bold font-serif text-6xl">
@@ -212,22 +226,26 @@ function App() {
           )}
           {mode === "test" && (
             <>
-            <div className="font-semibold text-3xl text-zinc-800/80">
-                <span className="text-amber-600">{testDisplayIndices.length}</span> Remaining
-            </div>
-            <div className="font-semibold text-3xl text-zinc-800/80 mt-2">
-            <span className="text-red-600">{testWrongIndices.length}</span> Wrong
-            </div>
+              <div className="font-semibold text-3xl text-zinc-800/80">
+                <span className="text-amber-600">
+                  {testDisplayIndices.length}
+                </span>{" "}
+                Remaining
+              </div>
+              <div className="font-semibold text-3xl text-zinc-800/80 mt-2 -mb-2">
+                <span className="text-red-600">{testWrongIndices.length}</span>{" "}
+                Wrong
+              </div>
             </>
           )}
         </div>
-        <div className="fixed left-10 top-10 bg-white shadow-md p-4 rounded-lg hidden lg:block">
+        <div className="fixed left-10 top-10 bg-white shadow-md p-4 rounded-lg hidden lg:block min-w-[14vw] text-center">
+
           <div className="mb-2">
-            <label className="text-xl mr-2">Unit:</label>
             <select
               value={unit}
               onChange={handleUnitChange}
-              className="text-xl p-2 rounded-md border-2 border-gray-300"
+              className="text-xl p-2 rounded-md border-2 border-gray-300 w-full text-center disabled:opacity-20"
               disabled={mode === "test"}
             >
               {units
@@ -238,32 +256,31 @@ function App() {
                 })
                 .map((unit) => (
                   <option value={unit} key={unit}>
-                    {unit}
+                    {unit.charAt(0).toUpperCase() + unit.slice(1).replace("_", " ")}
                   </option>
                 ))}
             </select>
           </div>
           <div className="mb-2">
-            <label className="text-xl mr-2">Mode:</label>
             <button
               onClick={handleModeChange}
-              className="text-xl p-2 rounded-md border-2 border-gray-300"
+              className="text-xl p-2 rounded-md border-2 border-gray-300 w-full"
             >
-              {mode}
+              Now {mode.charAt(0).toUpperCase() + mode.slice(1)}ing
             </button>
           </div>
           <div className="mb-2">
             <button
               onClick={handleToggleDefinition}
-              className="text-xl p-2 rounded-md border-2 border-gray-300"
+              className="text-xl p-2 rounded-md border-2 border-gray-300 w-full"
             >
-              {showDefinition ? "Hide definition" : "Show definition"}
+              Definition
             </button>
           </div>
           <div>
             <button
               onClick={shuffleWordList}
-              className="text-xl p-2 rounded-md border-2 border-gray-300"
+              className="text-xl p-2 rounded-md border-2 border-gray-300 w-full"
             >
               Shuffle
             </button>
@@ -293,7 +310,7 @@ function App() {
                     onClick={handlePrevWord}
                     className="text-xl p-2 rounded-md border-2 border-gray-300 w-1/2 opacity-40 hover:opacity-100"
                   >
-                    ← Prev 
+                    ← Prev
                   </button>
                   <button
                     onClick={handleNextWord}
@@ -306,7 +323,13 @@ function App() {
               {mode === "test" && (
                 <>
                   <button
-                    onClick={() => handleTestSelection(true)}
+                    onClick={() => {
+                      if (showDefinition === false) {
+                        setShowDefinition(true);
+                      } else {
+                        handleTestSelection(true);
+                      }
+                    }}
                     className="text-xl p-2 rounded-md border-2 border-gray-300 w-1/2"
                   >
                     ✓
@@ -319,10 +342,15 @@ function App() {
                   </button>
                 </>
               )}
-              </div>
-            <div className="flex space-x-4 w-full">
-            <FillButton onFilled={() => handleDeleteWord()} text={"Familiar Enough (Hold Spacebar)"}/>
             </div>
+            {mode === "learn" && (
+              <div className="flex space-x-4 w-full">
+                <FillButton
+                  onFilled={() => handleDeleteWord()}
+                  text={"Familiar Enough (Hold Spacebar)"}
+                />
+              </div>
+            )}
           </>
         )}
       </div>
